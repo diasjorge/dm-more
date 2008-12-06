@@ -90,4 +90,13 @@ describe "Taggable" do
     TaggedModel.new.taggable?.should == TaggedModel.taggable?
     TaggedModel.new.taggable?.should be_true
   end
+
+  it 'should destroy associated taggings when destroyed' do
+    taggable = TaggedModel.new
+    taggable.tag_list = 'tag1, tag2, tag3'
+    taggable.save
+    TaggedModel.tagged_with('tag1').should == [taggable]
+    taggable.destroy
+    TaggedModel.tagged_with('tag1').should == []
+  end
 end

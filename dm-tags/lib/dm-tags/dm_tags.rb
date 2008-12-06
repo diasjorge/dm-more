@@ -51,6 +51,7 @@ module DataMapper
 
             before :create, :update_#{association}
             before :update, :update_#{association}
+            before :destroy, :destroy_#{singular}_taggings
 
             def #{association}
               #{singular}_taggings.map { |tagging| tagging.tag }.sort_by { |tag| tag.name }
@@ -83,6 +84,10 @@ module DataMapper
               end
 
               self.frozen_#{singular}_list = #{association}.map { |tag| tag.name }.join(',')
+            end
+            
+            def destroy_#{singular}_taggings
+              #{singular}_taggings.destroy!
             end
           RUBY
         end
