@@ -77,6 +77,17 @@ describe "Taggable" do
       TaggedModel.tagged_with('tag1', :on => 'skills').should == [taggable2]
       TaggedModel.tagged_with('tag1', :on => 'tags').should == [taggable1]
     end
+
+    it "should allow extra conditions for the query" do
+      taggable1 = TaggedModel.new
+      taggable2 = TaggedModel.new
+      taggable1.tag_list = 'tag1, tag2, tag3'
+      taggable2.skill_list = 'tag1, skill4'
+      taggable1.save
+      taggable2.save
+      TaggedModel.tagged_with('tag1').should == [taggable1, taggable2]
+      TaggedModel.tagged_with('tag1', :id => taggable1.id).should == [taggable1]
+    end
   end
 
   it "should have a class method .taggable? which returns true if tagging is defined, and false otherwise" do
