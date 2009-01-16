@@ -6,7 +6,7 @@ module DataMapper
     # @author Guy van den Berg
     # @since  0.9
     class UniquenessValidator < GenericValidator
-      include Assertions
+      include Extlib::Assertions
 
       def initialize(field_name, options = {})
         assert_kind_of 'scope', options[:scope], Array, Symbol if options.has_key?(:scope)
@@ -43,8 +43,8 @@ module DataMapper
         # is target and found resource identic? same instance... but not ==
         return true if !target.new_record? && resource.repository.name == repository_name && resource.model == target.model && resource.key == target.key
 
-        error_message = @options[:message] || "%s is already taken".t(Extlib::Inflection.humanize(field_name))
-        add_error(target, error_message , field_name)
+        error_message = @options[:message] || ValidationErrors.default_error_message(:taken, field_name)
+        add_error(target, error_message, field_name)
 
         return false
       end

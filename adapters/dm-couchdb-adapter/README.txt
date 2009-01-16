@@ -1,5 +1,9 @@
 This is a datamapper adapter to couchdb.
 
+NOTE: some functionality and their specs are based on functionality that is in
+edge couch but not in stable.  If you want everything to work, use edge.  
+Otherwise, your milage may vary.  Good luck and let me know about any bugs.
+
 == Setup
 Install with the rest of the dm-more package, using:
   gem install dm-more
@@ -29,6 +33,11 @@ This adds the following reserved properties (which have special meaning in Couch
 property :id, String, :key => true, :field => '_id'
 property :rev, String, :field => '_rev'
 property :attachments, DataMapper::Types::JsonObject, :field => '_attachments'
+
+If you want the model to use your couch repository by default, be sure to also add the following(replacing :couch with your repository name):
+def self.default_repository_name
+  :couch
+end
 
 You should now be able to use resources and their properties and have them stored to couchdb.
 NOTE: 'couchdb_type' is a reserved property, used to map documents to their ruby models.

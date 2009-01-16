@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module DataMapper
   module Validate
 
@@ -13,8 +14,8 @@ module DataMapper
     # @since  0.9
     class GenericValidator
 
-      attr_accessor :if_clause
-      attr_accessor :unless_clause
+      attr_accessor :if_clause, :unless_clause
+      attr_reader :field_name
 
       # Construct a validator. Capture the :if and :unless clauses when present.
       #
@@ -28,8 +29,8 @@ module DataMapper
       # that is sub-classing this GenericValidator
       #
       def initialize(field, opts = {})
-        @if_clause = opts.has_key?(:if) ? opts[:if] : nil
-        @unless_clause = opts.has_key?(:unless) ? opts[:unless] : nil
+        @if_clause     = opts.delete(:if)
+        @unless_clause = opts.delete(:unless)
       end
 
       # Add an error message to a target resource. If the error corresponds to a
@@ -43,7 +44,7 @@ module DataMapper
       # TODO - should the field_name for a general message be :default???
       #
       def add_error(target, message, field_name = :general)
-        target.errors.add(field_name,message)
+        target.errors.add(field_name, message)
       end
 
       # Call the validator. "call" is used so the operation is BoundMethod and
@@ -53,11 +54,7 @@ module DataMapper
       #                         against
       # @return <Boolean> true if valid, otherwise false
       def call(target)
-        raise "DataMapper::Validate::GenericValidator::call must be overriden in #{self.class.to_s}"
-      end
-
-      def field_name
-        @field_name
+        raise NotImplementedError, "DataMapper::Validate::GenericValidator::call must be overriden in a subclass"
       end
 
       # Determines if this validator should be run against the

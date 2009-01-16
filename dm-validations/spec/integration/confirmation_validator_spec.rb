@@ -41,6 +41,7 @@ describe DataMapper::Validate::ConfirmationValidator do
     canoe.name = 'White Water'
     canoe.name_confirmation = 'Not confirmed'
     canoe.should_not be_valid
+    canoe.errors.on(:name).should include('Name does not match the confirmation')
     canoe.errors.full_messages.first.should == 'Name does not match the confirmation'
 
     canoe.name_confirmation = 'White Water'
@@ -64,7 +65,9 @@ describe DataMapper::Validate::ConfirmationValidator do
       validators.clear!
       validates_is_confirmed :name, :allow_nil => false
     end
-    Canoe.new.should_not be_valid
+    canoe = Canoe.new
+    canoe.should_not be_valid
+    canoe.errors.on(:name).should include('Name does not match the confirmation')
   end
 
   it "should allow the name of the confirmation field to be set" do
@@ -95,8 +98,8 @@ describe DataMapper::Validate::ConfirmationValidator do
       validates_is_confirmed :name
     end
 
-    raft = Raft.new
+    raft = Raft.new(:id => 10)
     raft.name = 'Lifeboat'
-    lambda { raft.should_not be_valid }.should_not raise_error
+    raft.should_not be_valid
   end
 end

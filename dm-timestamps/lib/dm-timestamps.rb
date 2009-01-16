@@ -1,6 +1,6 @@
 require 'rubygems'
 
-gem 'dm-core', '~>0.9.8'
+gem 'dm-core', '~>0.9.10'
 require 'dm-core'
 
 module DataMapper
@@ -39,7 +39,7 @@ module DataMapper
           case name
             when *TIMESTAMP_PROPERTIES.keys
               type = TIMESTAMP_PROPERTIES[name].first
-              property name, type, :nullable => false
+              property name, type, :nullable => false, :auto_validation => false
             when :at
               timestamps(:created_at, :updated_at)
             when :on
@@ -53,4 +53,6 @@ module DataMapper
 
     class InvalidTimestampName < RuntimeError; end
   end # module Timestamp
+  # include Timestamp or Timestamps, it still works
+  Timestamps = Timestamp
 end # module DataMapper
